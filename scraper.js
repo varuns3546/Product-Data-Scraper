@@ -10,7 +10,7 @@ class Scraper{
         this.products = store.products
     }  
 
-    async fetchData() {
+    async scrape() {
         try {
         const response = await fetch(`https://r.jina.ai/${this.url}`, {
             method: "GET",
@@ -30,10 +30,15 @@ class Scraper{
         const content = json.data.content
         const re = new RegExp(this.regex);
 
-        const parsedContent = content.match(re);
-        console.log(parsedContent)
-        }
+        const testRegex = /\[([^\[\]\d\+\n\r"]+)\]\((https:\/\/[^)]+)\)/g
+        const tRString = testRegex.toString()
+        console.log(tRString)
+        const regexFromString = new RegExp(tRString);
+        const parsedContent = content.match(regexFromString);
 
+        console.log(parsedContent)
+        return null
+        }
         catch (error) {
         console.error('Error:', error);
         throw error;
@@ -41,3 +46,5 @@ class Scraper{
     }
    
 }
+
+module.exports = Scraper

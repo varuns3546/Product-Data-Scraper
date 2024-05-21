@@ -1,5 +1,6 @@
 const Store = require('./models/storeModel')
 const mongoose = require('mongoose')
+const Scraper = require('./scraper')
 
 
 const getStores = async (req, res) => {
@@ -90,6 +91,23 @@ const updateStore = async (req, res) => {
 }
 
 const toggleScrape = async (req, res) => {
+    console.log('scraping')
+    const id = req.params.id
+
+    if(!mongoose.Types.ObjectId.isValid(id)){
+        return res.status(404).json({error: 'no store found'})
+    }
+
+    const store = await Store.findById(id)
+    if(!store){
+        return res.status(404).json({error: 'no store found'})
+    }
+    else{
+        const scraper = new Scraper(store)
+        const products = await scraper.scrape()
+        return res.status(200).json(products) 
+    }
+
     
 }
 
